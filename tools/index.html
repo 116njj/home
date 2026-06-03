@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,15 +8,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* 메인 디자인과 통일된 스타일 가이드 */
+        /* 테마별 스타일 가이드 */
         :root {
             --bg-main: #f4f6f8;
             --bg-sidebar: #ffffff;
             --bg-card: #ffffff;
             --text-primary: #1e293b;
             --text-muted: #64748b;
-            --accent-color: #4a90e2; /* 도구 페이지 포인트 블루 */
+            --accent-color: #4a90e2; 
             --border-color: #e2e8f0;
+            --textarea-bg: #f8fafc;
             --sidebar-width: 260px;
         }
 
@@ -27,9 +28,10 @@
             --text-primary: #f1f5f9;
             --text-muted: #94a3b8;
             --border-color: #334155;
+            --textarea-bg: #0f172a;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Noto Sans KR', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Noto Sans KR', sans-serif; transition: background-color 0.3s, border-color 0.3s, color 0.3s; }
         body { background-color: var(--bg-main); color: var(--text-primary); display: flex; min-height: 100vh; overflow-x: hidden; }
 
         /* 사이드바 고정 */
@@ -40,9 +42,20 @@
         }
         .sidebar-brand { font-size: 1.25rem; font-weight: 700; color: var(--accent-color); margin-bottom: 32px; display: flex; align-items: center; gap: 8px; }
         .sidebar-brand a { text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px; }
-        .sidebar-menu { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-        .sidebar-menu a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: var(--text-muted); text-decoration: none; font-weight: 500; border-radius: 8px; transition: 0.2s; }
+        .sidebar-menu { list-style: none; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+        .sidebar-menu a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: var(--text-muted); text-decoration: none; font-weight: 500; border-radius: 8px; }
         .sidebar-menu a:hover, .sidebar-menu a.active { background-color: rgba(74, 144, 226, 0.08); color: var(--accent-color); }
+
+        /* 테마 스위치 스타일 */
+        .theme-toggle-container {
+            margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border-color);
+        }
+        .btn-theme-toggle {
+            width: 100%; padding: 12px; background-color: var(--bg-main); border: 1px solid var(--border-color);
+            color: var(--text-primary); border-radius: 8px; font-weight: 500; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 10px; transition: transform 0.1s;
+        }
+        .btn-theme-toggle:active { transform: scale(0.98); }
 
         .main-content { margin-left: var(--sidebar-width); flex: 1; padding: 40px; width: calc(100% - var(--sidebar-width)); }
         .content-header { margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
@@ -57,28 +70,26 @@
         .tool-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
         .tool-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
 
-        /* 입력 폼 공통 스타일 */
+        /* 입력 폼 스타일 */
         textarea {
             width: 100%; height: 140px; padding: 16px; border-radius: 8px;
-            border: 1px solid var(--border-color); background-color: var(--bg-main);
+            border: 1px solid var(--border-color); background-color: var(--textarea-bg);
             color: var(--text-primary); font-size: 0.95rem; resize: none; outline: none;
-            margin-bottom: 15px; transition: border-color 0.2s;
+            margin-bottom: 15px; transition: border-color 0.2s, background-color 0.3s;
         }
         textarea:focus { border-color: var(--accent-color); }
         
-        /* 결과창 복사 버튼 레이아웃 */
-        .tool-footer {
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
-        }
+        .tool-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
         .counter-result { display: flex; gap: 20px; font-size: 0.95rem; color: var(--text-muted); }
         .counter-result strong { color: var(--accent-color); }
 
         .btn-action {
             padding: 10px 20px; background-color: var(--accent-color); color: #fff;
             border: none; border-radius: 6px; font-weight: 600; cursor: pointer;
-            display: inline-flex; align-items: center; gap: 8px; transition: opacity 0.2s;
+            display: inline-flex; align-items: center; gap: 8px;
         }
         .btn-action:hover { opacity: 0.9; }
+        .btn-action.btn-purple { background-color: #9b59b6; }
         .btn-action.btn-green { background-color: #2ecc71; }
 
         @media (max-width: 580px) {
@@ -87,6 +98,7 @@
             .sidebar-brand { margin-bottom: 16px; }
             .sidebar-menu { flex-direction: row; flex-wrap: wrap; gap: 4px; }
             .sidebar-menu a { padding: 8px 12px; font-size: 0.9rem; }
+            .theme-toggle-container { margin-top: 12px; padding-top: 12px; width: 100%; }
             .main-content { margin-left: 0; padding: 20px; width: 100%; }
         }
     </style>
@@ -99,9 +111,17 @@
             <a href="../"><i class="fa-solid fa-arrow-left" style="font-size: 1rem;"></i> Jail.dev</a>
         </div>
         <ul class="sidebar-menu">
-            <li><a href="#korean-extractor" class="active"><i class="fa-solid fa-language"></i> 한글 텍스트 추출기</a></li>
+            <li><a href="#all-korean-generator" class="active"><i class="fa-solid fa-cubes"></i> 11172 모든 한글 생성기</a></li>
+            <li><a href="#korean-extractor"><i class="fa-solid fa-language"></i> 한글 텍스트 추출기</a></li>
             <li><a href="#char-counter"><i class="fa-solid fa-font"></i> 글자수 세기</a></li>
         </ul>
+        
+        <!-- 테마 전환 영역 -->
+        <div class="theme-toggle-container">
+            <button class="btn-theme-toggle" id="theme-toggle-btn">
+                <i class="fa-solid fa-moon"></i> <span>다크 모드</span>
+            </button>
+        </div>
     </aside>
 
     <!-- 우측 메인 도구 기능 구현부 -->
@@ -111,15 +131,34 @@
             <p style="color: var(--text-muted); font-size: 0.9rem;">웹 브라우저에서 바로 사용하는 유용한 툴킷입니다.</p>
         </header>
 
-        <!-- [도구 1] 모든 한글 텍스트 추출기 -->
+        <!-- [도구 1] 11172 모든 한글 생성기 -->
+        <section class="tool-container" id="all-korean-generator">
+            <div class="tool-title">
+                <i class="fa-solid fa-cubes" style="color: #9b59b6;"></i> 11172 모든 한글 완성형 생성기
+            </div>
+            <p class="tool-desc">유니코드에 등록된 조합 가능한 모든 한글('가'부터 '힣'까지 총 11,172자)을 생성합니다.</p>
+            
+            <textarea id="generator-output" placeholder="아래 생성 버튼을 누르면 모든 한글이 여기에 나타납니다..." readonly style="height: 180px;"></textarea>
+            
+            <div class="tool-footer">
+                <button class="btn-action btn-purple" id="btn-generate-all">
+                    <i class="fa-solid fa-bolt"></i> 모든 한글 생성하기
+                </button>
+                <button class="btn-action" id="btn-copy-generator" style="background-color: var(--text-primary);">
+                    <i class="fa-regular fa-copy"></i> 결과 복사하기
+                </button>
+            </div>
+        </section>
+
+        <!-- [도구 2] 모든 한글 텍스트 추출기 -->
         <section class="tool-container" id="korean-extractor">
             <div class="tool-title">
-                <i class="fa-solid fa-language" style="color: #2ecc71;"></i> 모든 한글 텍스트 추출기
+                <i class="fa-solid fa-language" style="color: #2ecc71;"></i> 텍스트 내 한글 추출기
             </div>
-            <p class="tool-desc">아무 텍스트나 코드를 붙여넣으세요. 영문, 숫자, 기호를 모두 제외하고 오직 순수 '한글'만 실시간으로 정제해 줍니다.</p>
+            <p class="tool-desc">아무 텍스트나 소스코드를 붙여넣으면, 영문/숫자/기호를 모두 제외하고 순수 '한글'만 정제합니다.</p>
             
             <textarea id="extractor-input" placeholder="여기에 대량의 원본 소스코드나 복잡한 텍스트를 복사·붙여넣기 하세요..."></textarea>
-            <textarea id="extractor-output" placeholder="정제된 한글 결과물이 여기에 표시됩니다..." readonly style="background-color: rgba(0,0,0,0.02); border-style: dashed;"></textarea>
+            <textarea id="extractor-output" placeholder="정제된 한글 결과물이 여기에 표시됩니다..." readonly style="border-style: dashed;"></textarea>
             
             <div class="tool-footer">
                 <div class="counter-result">
@@ -131,7 +170,7 @@
             </div>
         </section>
 
-        <!-- [도구 2] 실시간 글자수 세기 기능 -->
+        <!-- [도구 3] 실시간 글자수 세기 기능 -->
         <section class="tool-container" id="char-counter">
             <div class="tool-title">
                 <i class="fa-solid fa-font" style="color: var(--accent-color);"></i> 실시간 글자수 계산기
@@ -149,9 +188,61 @@
         </section>
     </main>
 
-    <!-- 도구 작동 자바스크립트 -->
+    <!-- 자바스크립트 로직 -->
     <script>
-        // 1. 한글 텍스트 추출기 로직
+        // --- 테마 설정 로직 ---
+        const htmlDoc = document.documentElement;
+        const themeBtn = document.getElementById('theme-toggle-btn');
+        const themeIcon = themeBtn.querySelector('i');
+        const themeText = themeBtn.querySelector('span');
+
+        // 테마 상태 업데이트 함수
+        function setTheme(theme) {
+            htmlDoc.setAttribute('data-theme', theme);
+            localStorage.setItem('tools-theme', theme);
+            
+            if (theme === 'dark') {
+                themeIcon.className = 'fa-solid fa-sun';
+                themeText.textContent = '라이트 모드';
+            } else {
+                themeIcon.className = 'fa-solid fa-moon';
+                themeText.textContent = '다크 모드';
+            }
+        }
+
+        // 로컬스토리지 확인 후 초기 세팅
+        const savedTheme = localStorage.getItem('tools-theme') || 'light';
+        setTheme(savedTheme);
+
+        // 버튼 클릭 이벤트
+        themeBtn.addEventListener('click', () => {
+            const currentTheme = htmlDoc.getAttribute('data-theme');
+            setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        });
+
+        // --- 1. 모든 한글 생성기 로직 ---
+        const generatorOutput = document.getElementById('generator-output');
+        const btnGenerateAll = document.getElementById('btn-generate-all');
+        const btnCopyGenerator = document.getElementById('btn-copy-generator');
+
+        btnGenerateAll.addEventListener('click', () => {
+            let allHangul = [];
+            for (let i = 0xAC00; i <= 0xD7A3; i++) {
+                allHangul.push(String.fromCharCode(i));
+            }
+            generatorOutput.value = allHangul.join('');
+        });
+
+        btnCopyGenerator.addEventListener('click', () => {
+            if (!generatorOutput.value) return alert('먼저 생성하기 버튼을 눌러주세요.');
+            navigator.clipboard.writeText(generatorOutput.value).then(() => {
+                const orig = btnCopyGenerator.innerHTML;
+                btnCopyGenerator.innerHTML = '<i class="fa-solid fa-check"></i> 복사 완료!';
+                setTimeout(() => { btnCopyGenerator.innerHTML = orig; }, 1500);
+            });
+        });
+
+        // --- 2. 텍스트 내 한글 추출기 로직 ---
         const extractorInput = document.getElementById('extractor-input');
         const extractorOutput = document.getElementById('extractor-output');
         const extractCount = document.getElementById('extract-count');
@@ -159,13 +250,10 @@
 
         extractorInput.addEventListener('input', () => {
             const rawText = extractorInput.value;
-            // 한글 정규식 (ㄱ-ㅎ, ㅏ-ㅣ, 가-힣 및 띄어쓰기 유지)
             const koreanMatches = rawText.match(/[ㄱ-ㅎㅏ-ㅣ가-힣]+/g);
-            
             if (koreanMatches) {
                 const cleanText = koreanMatches.join(' ');
                 extractorOutput.value = cleanText;
-                // 공백 제외 순수 한글 글자수 기록
                 extractCount.textContent = cleanText.replace(/\s/g, "").length;
             } else {
                 extractorOutput.value = '';
@@ -173,22 +261,16 @@
             }
         });
 
-        // 결과물 클립보드 복사 기능
         btnCopyExtractor.addEventListener('click', () => {
-            if (!extractorOutput.value) {
-                alert('추출된 내용이 없습니다.');
-                return;
-            }
+            if (!extractorOutput.value) return alert('추출된 내용이 없습니다.');
             navigator.clipboard.writeText(extractorOutput.value).then(() => {
-                const originalText = btnCopyExtractor.innerHTML;
+                const orig = btnCopyExtractor.innerHTML;
                 btnCopyExtractor.innerHTML = '<i class="fa-solid fa-check"></i> 복사 완료!';
-                setTimeout(() => {
-                    btnCopyExtractor.innerHTML = originalText;
-                }, 1500);
+                setTimeout(() => { btnCopyExtractor.innerHTML = orig; }, 1500);
             });
         });
 
-        // 2. 글자수 세기 계산기 로직
+        // --- 3. 글자수 세기 로직 ---
         const counterInput = document.getElementById('counter-input');
         const countAll = document.getElementById('count-all');
         const countPure = document.getElementById('count-pure');
@@ -199,7 +281,7 @@
             countPure.textContent = text.replace(/\s/g, "").length;
         });
 
-        // 스크롤 및 메뉴 링크 동기화 활성화 제어
+        // 메뉴 링크 동기화
         const menuLinks = document.querySelectorAll('.sidebar-menu a');
         menuLinks.forEach(link => {
             link.addEventListener('click', () => {
