@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jail조일 | Portfolio</title>
-    <!-- 소셜 아이콘 및 디자인 폰트 로드 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     
@@ -96,7 +95,18 @@
 
         .sidebar-menu a.external-link {
             border: 1px dashed var(--border-color);
+            margin-top: 8px;
+        }
+        /* Tools 전용 사이드바 단추 스타일 */
+        .sidebar-menu a.external-link.tools-btn {
+            background-color: rgba(74, 144, 226, 0.05);
+            color: #4a90e2;
+            border: 1px solid rgba(74, 144, 226, 0.2);
             margin-top: 16px;
+        }
+        .sidebar-menu a.external-link.tools-btn:hover {
+            background-color: rgba(74, 144, 226, 0.1);
+            border-color: #4a90e2;
         }
         .sidebar-menu a.external-link:hover {
             background-color: rgba(74, 144, 226, 0.08);
@@ -261,7 +271,7 @@
         }
         .social-box a:hover { color: var(--accent-color); }
 
-        /* [모바일 전용 중단점 최적화] 완전히 작은 모바일 디바이스(480px 이하)에서만 반응하도록 수정 */
+        /* [모바일 전용 중단점 최적화] 완전히 작은 모바일 디바이스(580px 이하)에서만 반응하도록 수정 */
         @media (max-width: 580px) {
             body { flex-direction: column; }
             .sidebar {
@@ -272,6 +282,7 @@
             .sidebar-menu { flex-direction: row; flex-wrap: wrap; gap: 4px; }
             .sidebar-menu a { padding: 8px 12px; font-size: 0.9rem; }
             .sidebar-menu a.external-link { margin-top: 0; }
+            .sidebar-menu a.external-link.tools-btn { margin-top: 0; }
             .main-content { margin-left: 0; padding: 20px; width: 100%; }
             .theme-toggle-box { display: none; }
         }
@@ -279,7 +290,6 @@
 </head>
 <body>
 
-    <!-- 사이드바 내비게이션 영역 -->
     <aside class="sidebar">
         <div class="sidebar-brand">
             <i class="fa-solid fa-square-terminal"></i> Jail.dev
@@ -288,8 +298,8 @@
             <li><a href="#overview" class="active"><i class="fa-solid fa-table-columns"></i> 개요</a></li>
             <li><a href="#about"><i class="fa-solid fa-user"></i> 프로필</a></li>
             <li><a href="#projects"><i class="fa-solid fa-folder-open"></i> 프로젝트</a></li>
-            <!-- Image Master 웹사이트 바로가기 메뉴 링크 -->
             <li><a href="https://116njj.github.io/image-master/" target="_blank" class="external-link"><i class="fa-solid fa-wand-magic-sparkles"></i> Image Master <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem;"></i></a></li>
+            <li><a href="./tools/" class="external-link tools-btn"><i class="fa-solid fa-toolbox"></i> 내 도구함 (Tools) <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem; margin-left: auto;"></i></a></li>
         </ul>
         
         <div class="theme-toggle-box">
@@ -299,10 +309,8 @@
         </div>
     </aside>
 
-    <!-- 우측 메인 대시보드 영역 -->
     <main class="main-content">
         
-        <!-- 상단 헤더 툴바 -->
         <header class="content-header" id="overview">
             <div>
                 <h1>Dashboard</h1>
@@ -313,7 +321,6 @@
             </a>
         </header>
 
-        <!-- 프로필 섹션 -->
         <div class="section-title" id="about">User Profile</div>
         <div class="grid-layout">
             <div class="app-card">
@@ -340,15 +347,20 @@
             </div>
         </div>
 
-        <!-- 프로젝트 포트폴리오 섹션 -->
         <div class="section-title" id="projects">Featured Projects</div>
         <div class="grid-layout">
-            <!-- Image Master 프로젝트 카드 -->
             <div class="app-card featured-card">
-                <div class="card-meta blue-meta">Main Web Service</div>
+                <div class="card-meta blue-meta">Utility Toolkit</div>
+                <h3>Developer Tools</h3>
+                <p>실시간 글자수 세기 등 유용하게 사용할 수 있는 기능들을 커스텀하여 모아둔 하위 웹 도구함입니다.</p>
+                <a href="./tools/" class="app-link blue-link">도구함 열기 ➔</a>
+            </div>
+
+            <div class="app-card">
+                <div class="card-meta" style="color: #eb4f44;">Main Web Service</div>
                 <h3>Image Master</h3>
                 <p>깔끔한 UI 구성과 고유의 디자인 아이덴티티를 담아 직접 빌드하고 운영 중인 독자적인 웹 서비스 공간입니다.</p>
-                <a href="https://116njj.github.io/image-master/" target="_blank" class="app-link blue-link">서비스 방문하기 ➔</a>
+                <a href="https://116njj.github.io/image-master/" target="_blank" class="app-link" style="color: #eb4f44;">서비스 방문하기 ➔</a>
             </div>
 
             <div class="app-card">
@@ -364,17 +376,10 @@
                 <p>고유하고 희귀한 시스템 로직과 설계를 보존하여 공유하는 특수 목적 프로젝트 공간입니다.</p>
                 <a href="https://playentry.org/project/687aeb6adcf81aaff062d4a4" target="_blank" class="app-link">코드 탐색하기 ➔</a>
             </div>
-
-            <div class="app-card">
-                <div class="card-meta">Sub Lineup</div>
-                <h3>ENTArchive / ENTNCS</h3>
-                <p>삭제된 엔트리 걸작들의 복원 작업 및 NCS 음원을 컴포넌트화 시키는 서브 브랜드 계정입니다.</p>
-            </div>
         </div>
 
     </main>
 
-    <!-- 인터랙티브 자바스크립트 -->
     <script>
         // 다크모드/라이트모드 제어 토글 로직
         const themeBtn = document.getElementById('theme-btn');
