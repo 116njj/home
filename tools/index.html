@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jail.dev | Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 메인 디자인과 통일된 스타일 가이드 */
+        :root {
+            --bg-main: #f4f6f8;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-muted: #64748b;
+            --accent-color: #4a90e2; /* 도구 페이지는 신뢰감을 주는 블루 포인트 */
+            --border-color: #e2e8f0;
+            --sidebar-width: 260px;
+        }
+
+        [data-theme="dark"] {
+            --bg-main: #0f172a;
+            --bg-sidebar: #1e293b;
+            --bg-card: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Noto Sans KR', sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-primary); display: flex; min-height: 100vh; }
+
+        /* 사이드바 고정 */
+        .sidebar {
+            width: var(--sidebar-width); background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color); position: fixed;
+            top: 0; bottom: 0; left: 0; display: flex; flex-direction: column; padding: 24px; z-index: 100;
+        }
+        .sidebar-brand { font-size: 1.25rem; font-weight: 700; color: var(--accent-color); margin-bottom: 32px; display: flex; align-items: center; gap: 8px; }
+        .sidebar-brand a { text-decoration: none; color: inherit; }
+        .sidebar-menu { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+        .sidebar-menu a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: var(--text-muted); text-decoration: none; font-weight: 500; border-radius: 8px; transition: 0.2s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background-color: rgba(74, 144, 226, 0.08); color: var(--accent-color); }
+
+        .main-content { margin-left: var(--sidebar-width); flex: 1; padding: 40px; width: calc(100% - var(--sidebar-width)); }
+        .content-header { margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
+        .content-header h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 4px; }
+
+        /* 도구 레이아웃 구역 */
+        .tool-container {
+            background-color: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            margin-bottom: 30px;
+        }
+        .tool-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+
+        /* 도구 1: 글자수 세기 스타일 예시 */
+        textarea {
+            width: 100%; height: 150px; padding: 16px; border-radius: 8px;
+            border: 1px solid var(--border-color); background-color: var(--bg-main);
+            color: var(--text-primary); font-size: 1rem; resize: none; outline: none;
+            margin-bottom: 15px; transition: border-color 0.2s;
+        }
+        textarea:focus { border-color: var(--accent-color); }
+        .counter-result { display: flex; gap: 20px; font-size: 0.95rem; color: var(--text-muted); }
+        .counter-result strong { color: var(--accent-color); }
+
+        @media (max-width: 580px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; position: relative; border-right: none; border-bottom: 1px solid var(--border-color); padding: 16px; }
+            .sidebar-brand { margin-bottom: 16px; }
+            .main-content { margin-left: 0; padding: 20px; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <a href="../"><i class="fa-solid fa-arrow-left" style="font-size: 1rem; margin-right: 5px;"></i> Jail.dev</a>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#char-counter" class="active"><i class="fa-solid fa-font"></i> 글자수 세기</a></li>
+            <li><a href="#tool-2"><i class="fa-solid fa-ellipsis"></i> 추가 예정 도구</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1>Developer Tools</h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">웹 브라우저에서 바로 사용하는 유용한 툴킷입니다.</p>
+        </header>
+
+        <section class="tool-container" id="char-counter">
+            <div class="tool-title">
+                <i class="fa-solid fa-font" style="color: var(--accent-color);"></i> 실시간 글자수 계산기
+            </div>
+            <textarea id="tool-input" placeholder="여기에 텍스트를 입력하거나 붙여넣으세요..."></textarea>
+            <div class="counter-result">
+                <span>공백 포함: <strong id="count-all">0</strong>자</span>
+                <span>공백 제외: <strong id="count-pure">0</strong>자</span>
+            </div>
+        </section>
+
+        <section class="tool-container" id="tool-2" style="opacity: 0.6;">
+            <div class="tool-title"><i class="fa-solid fa-gear"></i> 다음 도구 준비 중...</div>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Luau 관련 툴이나 필요한 유틸리티 도구를 이곳에 추가해 보세요!</p>
+        </section>
+    </main>
+
+    <script>
+        // 글자수 세기 기능 핵심 로직
+        const textarea = document.getElementById('tool-input');
+        const countAll = document.getElementById('count-all');
+        const countPure = document.getElementById('count-pure');
+
+        textarea.addEventListener('input', () => {
+            const text = textarea.value;
+            countAll.textContent = text.length; // 공백 포함
+            countPure.textContent = text.replace(/\s/g, "").length; // 공백 제거
+        });
+    </script>
+</body>
+</html>
