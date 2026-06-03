@@ -15,7 +15,7 @@
             --bg-card: #ffffff;
             --text-primary: #1e293b;
             --text-muted: #64748b;
-            --accent-color: #4a90e2; /* 도구 페이지는 신뢰감을 주는 블루 포인트 */
+            --accent-color: #4a90e2; /* 도구 페이지 포인트 블루 */
             --border-color: #e2e8f0;
             --sidebar-width: 260px;
         }
@@ -30,7 +30,7 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Noto Sans KR', sans-serif; }
-        body { background-color: var(--bg-main); color: var(--text-primary); display: flex; min-height: 100vh; }
+        body { background-color: var(--bg-main); color: var(--text-primary); display: flex; min-height: 100vh; overflow-x: hidden; }
 
         /* 사이드바 고정 */
         .sidebar {
@@ -39,7 +39,7 @@
             top: 0; bottom: 0; left: 0; display: flex; flex-direction: column; padding: 24px; z-index: 100;
         }
         .sidebar-brand { font-size: 1.25rem; font-weight: 700; color: var(--accent-color); margin-bottom: 32px; display: flex; align-items: center; gap: 8px; }
-        .sidebar-brand a { text-decoration: none; color: inherit; }
+        .sidebar-brand a { text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px; }
         .sidebar-menu { list-style: none; display: flex; flex-direction: column; gap: 8px; }
         .sidebar-menu a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: var(--text-muted); text-decoration: none; font-weight: 500; border-radius: 8px; transition: 0.2s; }
         .sidebar-menu a:hover, .sidebar-menu a.active { background-color: rgba(74, 144, 226, 0.08); color: var(--accent-color); }
@@ -52,74 +52,160 @@
         .tool-container {
             background-color: var(--bg-card); border: 1px solid var(--border-color);
             border-radius: 12px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
-        .tool-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .tool-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+        .tool-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
 
-        /* 도구 1: 글자수 세기 스타일 예시 */
+        /* 입력 폼 공통 스타일 */
         textarea {
-            width: 100%; height: 150px; padding: 16px; border-radius: 8px;
+            width: 100%; height: 140px; padding: 16px; border-radius: 8px;
             border: 1px solid var(--border-color); background-color: var(--bg-main);
-            color: var(--text-primary); font-size: 1rem; resize: none; outline: none;
+            color: var(--text-primary); font-size: 0.95rem; resize: none; outline: none;
             margin-bottom: 15px; transition: border-color 0.2s;
         }
         textarea:focus { border-color: var(--accent-color); }
+        
+        /* 결과창 복사 버튼 레이아웃 */
+        .tool-footer {
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+        }
         .counter-result { display: flex; gap: 20px; font-size: 0.95rem; color: var(--text-muted); }
         .counter-result strong { color: var(--accent-color); }
+
+        .btn-action {
+            padding: 10px 20px; background-color: var(--accent-color); color: #fff;
+            border: none; border-radius: 6px; font-weight: 600; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 8px; transition: opacity 0.2s;
+        }
+        .btn-action:hover { opacity: 0.9; }
+        .btn-action.btn-green { background-color: #2ecc71; }
 
         @media (max-width: 580px) {
             body { flex-direction: column; }
             .sidebar { width: 100%; position: relative; border-right: none; border-bottom: 1px solid var(--border-color); padding: 16px; }
             .sidebar-brand { margin-bottom: 16px; }
+            .sidebar-menu { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+            .sidebar-menu a { padding: 8px 12px; font-size: 0.9rem; }
             .main-content { margin-left: 0; padding: 20px; width: 100%; }
         }
     </style>
 </head>
 <body>
 
+    <!-- 좌측 사이드바 -->
     <aside class="sidebar">
         <div class="sidebar-brand">
-            <a href="../"><i class="fa-solid fa-arrow-left" style="font-size: 1rem; margin-right: 5px;"></i> Jail.dev</a>
+            <a href="../"><i class="fa-solid fa-arrow-left" style="font-size: 1rem;"></i> Jail.dev</a>
         </div>
         <ul class="sidebar-menu">
-            <li><a href="#char-counter" class="active"><i class="fa-solid fa-font"></i> 글자수 세기</a></li>
-            <li><a href="#tool-2"><i class="fa-solid fa-ellipsis"></i> 추가 예정 도구</a></li>
+            <li><a href="#korean-extractor" class="active"><i class="fa-solid fa-language"></i> 한글 텍스트 추출기</a></li>
+            <li><a href="#char-counter"><i class="fa-solid fa-font"></i> 글자수 세기</a></li>
         </ul>
     </aside>
 
+    <!-- 우측 메인 도구 기능 구현부 -->
     <main class="main-content">
         <header class="content-header">
             <h1>Developer Tools</h1>
             <p style="color: var(--text-muted); font-size: 0.9rem;">웹 브라우저에서 바로 사용하는 유용한 툴킷입니다.</p>
         </header>
 
+        <!-- [도구 1] 모든 한글 텍스트 추출기 -->
+        <section class="tool-container" id="korean-extractor">
+            <div class="tool-title">
+                <i class="fa-solid fa-language" style="color: #2ecc71;"></i> 모든 한글 텍스트 추출기
+            </div>
+            <p class="tool-desc">아무 텍스트나 코드를 붙여넣으세요. 영문, 숫자, 기호를 모두 제외하고 오직 순수 '한글'만 실시간으로 정제해 줍니다.</p>
+            
+            <textarea id="extractor-input" placeholder="여기에 대량의 원본 소스코드나 복잡한 텍스트를 복사·붙여넣기 하세요..."></textarea>
+            <textarea id="extractor-output" placeholder="정제된 한글 결과물이 여기에 표시됩니다..." readonly style="background-color: rgba(0,0,0,0.02); border-style: dashed;"></textarea>
+            
+            <div class="tool-footer">
+                <div class="counter-result">
+                    <span>추출된 한글: <strong id="extract-count" style="color: #2ecc71;">0</strong>자</span>
+                </div>
+                <button class="btn-action btn-green" id="btn-copy-extractor">
+                    <i class="fa-regular fa-copy"></i> 결과 복사하기
+                </button>
+            </div>
+        </section>
+
+        <!-- [도구 2] 실시간 글자수 세기 기능 -->
         <section class="tool-container" id="char-counter">
             <div class="tool-title">
                 <i class="fa-solid fa-font" style="color: var(--accent-color);"></i> 실시간 글자수 계산기
             </div>
-            <textarea id="tool-input" placeholder="여기에 텍스트를 입력하거나 붙여넣으세요..."></textarea>
-            <div class="counter-result">
-                <span>공백 포함: <strong id="count-all">0</strong>자</span>
-                <span>공백 제외: <strong id="count-pure">0</strong>자</span>
+            <p class="tool-desc">공백을 포함하거나 제외한 문서의 정확한 글자 크기를 실시간으로 체크합니다.</p>
+            
+            <textarea id="counter-input" placeholder="글자수를 측정할 텍스트를 입력해 주세요..."></textarea>
+            
+            <div class="tool-footer">
+                <div class="counter-result">
+                    <span>공백 포함: <strong id="count-all">0</strong>자</span>
+                    <span>공백 제외: <strong id="count-pure">0</strong>자</span>
+                </div>
             </div>
-        </section>
-
-        <section class="tool-container" id="tool-2" style="opacity: 0.6;">
-            <div class="tool-title"><i class="fa-solid fa-gear"></i> 다음 도구 준비 중...</div>
-            <p style="color: var(--text-muted); font-size: 0.95rem;">Luau 관련 툴이나 필요한 유틸리티 도구를 이곳에 추가해 보세요!</p>
         </section>
     </main>
 
+    <!-- 도구 작동 자바스크립트 -->
     <script>
-        // 글자수 세기 기능 핵심 로직
-        const textarea = document.getElementById('tool-input');
+        // 1. 한글 텍스트 추출기 로직
+        const extractorInput = document.getElementById('extractor-input');
+        const extractorOutput = document.getElementById('extractor-output');
+        const extractCount = document.getElementById('extract-count');
+        const btnCopyExtractor = document.getElementById('btn-copy-extractor');
+
+        extractorInput.addEventListener('input', () => {
+            const rawText = extractorInput.value;
+            // 한글 정규식 (ㄱ-ㅎ, ㅏ-ㅣ, 가-힣 및 띄어쓰기 유지)
+            const koreanMatches = rawText.match(/[ㄱ-ㅎㅏ-ㅣ가-힣]+/g);
+            
+            if (koreanMatches) {
+                const cleanText = koreanMatches.join(' ');
+                extractorOutput.value = cleanText;
+                // 공백 제외 순수 한글 글자수 기록
+                extractCount.textContent = cleanText.replace(/\s/g, "").length;
+            } else {
+                extractorOutput.value = '';
+                extractCount.textContent = 0;
+            }
+        });
+
+        // 결과물 클립보드 복사 기능
+        btnCopyExtractor.addEventListener('click', () => {
+            if (!extractorOutput.value) {
+                alert('추출된 내용이 없습니다.');
+                return;
+            }
+            navigator.clipboard.writeText(extractorOutput.value).then(() => {
+                const originalText = btnCopyExtractor.innerHTML;
+                btnCopyExtractor.innerHTML = '<i class="fa-solid fa-check"></i> 복사 완료!';
+                setTimeout(() => {
+                    btnCopyExtractor.innerHTML = originalText;
+                }, 1500);
+            });
+        });
+
+        // 2. 글자수 세기 계산기 로직
+        const counterInput = document.getElementById('counter-input');
         const countAll = document.getElementById('count-all');
         const countPure = document.getElementById('count-pure');
 
-        textarea.addEventListener('input', () => {
-            const text = textarea.value;
-            countAll.textContent = text.length; // 공백 포함
-            countPure.textContent = text.replace(/\s/g, "").length; // 공백 제거
+        counterInput.addEventListener('input', () => {
+            const text = counterInput.value;
+            countAll.textContent = text.length;
+            countPure.textContent = text.replace(/\s/g, "").length;
+        });
+
+        // 스크롤 및 메뉴 링크 동기화 활성화 제어
+        const menuLinks = document.querySelectorAll('.sidebar-menu a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menuLinks.forEach(item => item.classList.remove('active'));
+                link.classList.add('active');
+            });
         });
     </script>
 </body>
