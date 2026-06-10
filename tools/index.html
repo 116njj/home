@@ -70,13 +70,15 @@
         .tool-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
         .tool-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
 
-        /* 입력 폼 스타일 */
+        /* 입력 폼 스타일 - 다크모드 글자색 보정 완료 */
         textarea {
             width: 100%; height: 140px; padding: 16px; border-radius: 8px;
             border: 1px solid var(--border-color); background-color: var(--textarea-bg);
-            color: var(--text-primary); font-size: 0.95rem; resize: none; outline: none;
-            margin-bottom: 15px; transition: border-color 0.2s, background-color 0.3s;
+            color: var(--text-primary) !important; /* 강제로 테마별 주 텍스트 색상 바인딩 */
+            font-size: 0.95rem; resize: none; outline: none;
+            margin-bottom: 15px; transition: border-color 0.2s, background-color 0.3s, color 0.3s;
         }
+        textarea::placeholder { color: var(--text-muted); }
         textarea:focus { border-color: var(--accent-color); }
         
         .tool-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
@@ -91,6 +93,9 @@
         .btn-action:hover { opacity: 0.9; }
         .btn-action.btn-purple { background-color: #9b59b6; }
         .btn-action.btn-green { background-color: #2ecc71; }
+        
+        /* 복사 단추 다크모드 대응 글자색 고정 */
+        #btn-copy-generator { color: #ffffff !important; }
 
         @media (max-width: 580px) {
             body { flex-direction: column; }
@@ -105,7 +110,6 @@
 </head>
 <body>
 
-    <!-- 좌측 사이드바 -->
     <aside class="sidebar">
         <div class="sidebar-brand">
             <a href="../"><i class="fa-solid fa-arrow-left" style="font-size: 1rem;"></i> Jail.dev</a>
@@ -116,7 +120,6 @@
             <li><a href="#char-counter"><i class="fa-solid fa-font"></i> 글자수 세기</a></li>
         </ul>
         
-        <!-- 테마 전환 영역 -->
         <div class="theme-toggle-container">
             <button class="btn-theme-toggle" id="theme-toggle-btn">
                 <i class="fa-solid fa-moon"></i> <span>다크 모드</span>
@@ -124,14 +127,12 @@
         </div>
     </aside>
 
-    <!-- 우측 메인 도구 기능 구현부 -->
     <main class="main-content">
         <header class="content-header">
             <h1>Developer Tools</h1>
             <p style="color: var(--text-muted); font-size: 0.9rem;">웹 브라우저에서 바로 사용하는 유용한 툴킷입니다.</p>
         </header>
 
-        <!-- [도구 1] 11172 모든 한글 생성기 -->
         <section class="tool-container" id="all-korean-generator">
             <div class="tool-title">
                 <i class="fa-solid fa-cubes" style="color: #9b59b6;"></i> 11172 모든 한글 완성형 생성기
@@ -144,13 +145,12 @@
                 <button class="btn-action btn-purple" id="btn-generate-all">
                     <i class="fa-solid fa-bolt"></i> 모든 한글 생성하기
                 </button>
-                <button class="btn-action" id="btn-copy-generator" style="background-color: var(--text-primary);">
+                <button class="btn-action" id="btn-copy-generator" style="background-color: #24292e;">
                     <i class="fa-regular fa-copy"></i> 결과 복사하기
                 </button>
             </div>
         </section>
 
-        <!-- [도구 2] 모든 한글 텍스트 추출기 -->
         <section class="tool-container" id="korean-extractor">
             <div class="tool-title">
                 <i class="fa-solid fa-language" style="color: #2ecc71;"></i> 텍스트 내 한글 추출기
@@ -170,7 +170,6 @@
             </div>
         </section>
 
-        <!-- [도구 3] 실시간 글자수 세기 기능 -->
         <section class="tool-container" id="char-counter">
             <div class="tool-title">
                 <i class="fa-solid fa-font" style="color: var(--accent-color);"></i> 실시간 글자수 계산기
@@ -188,7 +187,6 @@
         </section>
     </main>
 
-    <!-- 자바스크립트 로직 -->
     <script>
         // --- 테마 설정 로직 ---
         const htmlDoc = document.documentElement;
@@ -196,7 +194,6 @@
         const themeIcon = themeBtn.querySelector('i');
         const themeText = themeBtn.querySelector('span');
 
-        // 테마 상태 업데이트 함수
         function setTheme(theme) {
             htmlDoc.setAttribute('data-theme', theme);
             localStorage.setItem('tools-theme', theme);
@@ -210,11 +207,9 @@
             }
         }
 
-        // 로컬스토리지 확인 후 초기 세팅
         const savedTheme = localStorage.getItem('tools-theme') || 'light';
         setTheme(savedTheme);
 
-        // 버튼 클릭 이벤트
         themeBtn.addEventListener('click', () => {
             const currentTheme = htmlDoc.getAttribute('data-theme');
             setTheme(currentTheme === 'dark' ? 'light' : 'dark');
